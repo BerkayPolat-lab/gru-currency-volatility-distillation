@@ -1,0 +1,65 @@
+# Frozen experiment protocol from docs/03_GRU_EURUSD_Volatility_Distillation.pdf.
+# Change values here only, never inline in notebooks, so every run logs the same settings.
+
+data:
+  source: FRED
+  series_id: DEXUSEU            # U.S. dollars per euro, daily
+  start: "2000-01-01"
+  end: "2025-12-31"
+  snapshot_path: data/raw/DEXUSEU_snapshot.csv
+  interpolate_missing: false    # keep only observed dates
+
+features:
+  window: 60                    # previous 60 observations per example
+  trailing_vol_windows: [5, 20]
+  inputs: [log_return, squared_return, vol_5, vol_20]
+
+target:
+  horizon: 5                    # core; 20 is the optional extension
+  scaling: divide_by_train_mean # no centering, preserves nonnegativity
+
+splits:
+  train: ["2000-01-01", "2017-12-31"]
+  validation: ["2018-01-01", "2020-12-31"]
+  test: ["2021-01-01", "2025-12-31"]
+  drop_examples_crossing_split: true
+
+models:
+  teacher:
+    num_layers: 3
+    hidden_size: 128
+    dropout: 0.2
+  student:
+    num_layers: 1
+    hidden_size: 32
+    dropout: 0.0
+  output_transform: softplus    # identical nonnegative head for all models
+
+historical_control:
+  window: 20                    # trailing mean squared return
+
+training:
+  optimizer: adamw
+  learning_rate: 1.0e-3
+  weight_decay: 1.0e-4
+  batch_size: 32
+  max_epochs: 100
+  early_stopping_metric: val_mae
+  early_stopping_patience: 10
+  seeds: [0, 1, 2]
+
+distillation:
+  alpha_grid: [0.25, 0.50, 0.75] # alpha = 0 is the direct-student control
+  teacher_cache_split: train     # never cache teacher outputs on validation or test for training
+
+evaluation:
+  high_vol_quantile: 0.90       # cutoff fixed from training targets
+  student_target_gap: 0.05      # predeclared research target: within 5% of teacher MAE
+
+benchmark:
+  batch_size: 1
+  warmup_runs: 50
+  timed_runs: 1000
+  devices: [cpu, cuda]
+  num_threads: 1
+  dtype: float32

@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Data and model artifacts (persisted on Google Drive and the Hugging Face Hub)
+model/data/raw/*
+model/data/processed/*
+model/artifacts/*/*
+!model/**/.gitkeep
+*.pt
+*.pth
+*.safetensors
+*.onnx
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.vercel/
+
+# Secrets and OS
+.env
+.env.*
+!.env.example
+.DS_Store
