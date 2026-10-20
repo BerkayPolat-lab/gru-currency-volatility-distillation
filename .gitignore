@@ -6,9 +6,10 @@ venv/
 .ipynb_checkpoints/
 
 # Data and model artifacts (persisted on Google Drive and the Hugging Face Hub)
-model/data/raw/*
+# model/data/raw/*
 model/data/processed/*
 model/artifacts/*/*
+!model/artifacts/manifests/*
 !model/**/.gitkeep
 *.pt
 *.pth

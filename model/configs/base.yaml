@@ -6,7 +6,7 @@ data:
   series_id: DEXUSEU            # U.S. dollars per euro, daily
   start: "2000-01-01"
   end: "2025-12-31"
-  snapshot_path: data/raw/DEXUSEU_snapshot.csv
+  snapshot_path: data/raw/DEXUSEU.csv
   interpolate_missing: false    # keep only observed dates
 
 features:
