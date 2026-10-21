@@ -16,7 +16,8 @@ EUR/USD volatility forecasting with GRU distillation.
 - Never use the test period (2021-2025) for training, checkpoint selection, alpha selection, or tuning.
 - Teacher predictions used for student training are cached on training inputs only.
 - Direct and distilled students must be matched: same data, batches, early stopping, budget, and initial weights per seed.
-- Report errors in original variance-proxy units, and keep CPU and GPU latency as separate comparisons.
+- Score forecasts with MSE (not MAE) in original variance-proxy units; this also applies to early stopping and alpha selection.
+- Keep CPU and GPU latency as separate comparisons.
 
 ## Deployment
 

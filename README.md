@@ -72,21 +72,32 @@ Examples whose forward target crosses a split boundary are dropped.
 | Distilled student | Same as direct student | `(1 - alpha) * MSE(student, target) + alpha * MSE(student, teacher)` |
 | Historical control | Trailing 20-observation mean squared return | None |
 
-- Alpha is chosen from {0.25, 0.50, 0.75} on validation data.
+- Alpha is chosen from {0.25, 0.50, 0.75} by validation MSE.
 - Teacher predictions are cached on training inputs only.
 - Both students share targets, batches, early stopping, tuning budget, and starting weights per seed.
-- AdamW, at most 100 epochs, early stopping on validation MAE.
+- AdamW, at most 100 epochs, early stopping on validation MSE.
 - Three final seed triplets give nine main neural fits.
 
 ### Metrics
 
-1. Forecast MAE in original variance-proxy units, per seed and as mean with standard deviation.
-2. High-volatility MAE on test targets above the training 90th percentile, with the qualifying-date count.
+1. Forecast MSE in original variance-proxy units, per seed and as mean with standard deviation.
+2. High-volatility MSE on test targets above the training 90th percentile, with the qualifying-date count.
+   Selecting dates on realized targets favors over-forecasts, so this metric is descriptive, not robust evidence.
 3. Batch-1 inference latency, median and p95, with CPU and GPU reported separately.
 4. Serialized model size of the deployment state dict with scaling metadata.
 
 Training, caching, and search time are also recorded as compute accounting.
-A student within 5% of teacher MAE with lower latency and size is the predeclared research target, not an expected result.
+Errors are scored with MSE rather than MAE because daily squared returns are a noisy proxy.
+With a noisy but unbiased proxy, MSE ranks forecasts the same way the true variance would (Patton, 2011).
+
+Proxy noise adds the same large error to every model, so models are compared by their MSE gain over the historical control, not by raw error ratios.
+The predeclared research target is a student that retains at least 90% of the teacher's gain, with lower latency and size:
+
+```
+retained = (MSE_control - MSE_student) / (MSE_control - MSE_teacher) >= 0.90
+```
+
+This is a research target, not an expected result.
 
 ### Notebooks
 
@@ -97,7 +108,7 @@ A student within 5% of teacher MAE with lower latency and size is the predeclare
 | `03_teacher_training` | Teacher pilot and seeded training |
 | `04_teacher_cache` | Frozen teacher predictions on training inputs |
 | `05_student_training` | Alpha search, direct and distilled students |
-| `06_evaluation` | MAE tables, high-volatility analysis, figures |
+| `06_evaluation` | MSE tables, gain over the control, high-volatility analysis, figures |
 | `07_benchmark` | Latency and model size |
 | `08_export_to_huggingface` | Push deployment checkpoints to the Hub |
 

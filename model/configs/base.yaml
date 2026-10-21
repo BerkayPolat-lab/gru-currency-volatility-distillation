@@ -44,7 +44,7 @@ training:
   weight_decay: 1.0e-4
   batch_size: 32
   max_epochs: 100
-  early_stopping_metric: val_mae
+  early_stopping_metric: val_mse
   early_stopping_patience: 10
   seeds: [0, 1, 2]
 
@@ -54,7 +54,8 @@ distillation:
 
 evaluation:
   high_vol_quantile: 0.90       # cutoff fixed from training targets
-  student_target_gap: 0.05      # predeclared research target: within 5% of teacher MAE
+  error_metric: mse             # MSE in original variance-proxy units (Patton 2011), never MAE
+  min_improvement_retained: 0.90 # research target: student keeps >= 90% of the teacher's MSE gain over the historical control
 
 benchmark:
   batch_size: 1
