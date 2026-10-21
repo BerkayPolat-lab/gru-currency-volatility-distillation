@@ -45,23 +45,12 @@
       "vol_5",
       "vol_20"
     ],
-    "input_mean": {
-      "log_return": 4.6379322037582146e-05,
-      "squared_return": 3.9514293559496544e-05,
-      "vol_5": 0.005716074665042509,
-      "vol_20": 0.0059574552964864105
-    },
-    "input_std": {
-      "log_return": 0.006286566868657236,
-      "squared_return": 8.119255123219616e-05,
-      "vol_5": 0.002620708454956436,
-      "vol_20": 0.0020251567735071843
-    }
+    "scaling": "rolling 60-obs z score per feature, stats from origin day, past only"
   },
   "target": {
     "horizon": 5,
-    "scale_constant": 3.9429743092699994e-05,
+    "model_target": "ratio: next 5-obs mean sq return / trailing 60-obs var",
     "high_vol_quantile": 0.9,
-    "high_vol_cutoff": 8.035056898160315e-05
+    "high_vol_cutoff": 8.035056898160317e-05
   }
 }
