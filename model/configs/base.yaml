@@ -13,10 +13,12 @@ features:
   window: 60                    # previous 60 observations per example
   trailing_vol_windows: [5, 20]
   inputs: [log_return, squared_return, vol_5, vol_20]
+  scaling: rolling_zscore        # 60 obs mean/std from origin day, past only
+  scaling_window: 60
 
 target:
   horizon: 5                    # core; 20 is the optional extension
-  scaling: divide_by_train_mean # no centering, preserves nonnegativity
+  scaling: ratio_to_trailing_var # target / trailing 60 obs var, preds rescaled for eval
 
 splits:
   train: ["2000-01-01", "2017-12-31"]
@@ -36,7 +38,7 @@ models:
   output_transform: softplus    # identical nonnegative head for all models
 
 historical_control:
-  window: 20                    # trailing mean squared return
+  window: 60                    # trailing mean squared return
 
 training:
   optimizer: adamw
