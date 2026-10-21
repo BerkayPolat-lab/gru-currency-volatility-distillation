@@ -1,0 +1,67 @@
+{
+  "created": "2026-10-21",
+  "snapshot": {
+    "file": "data/raw/DEXUSEU.csv",
+    "sha256": "c4c76ae116315204bf2a33e3b9741f60e41962b9d94fcbc8d388222772181fe8",
+    "rows_in_range": 6783,
+    "rows_missing_dropped": 265,
+    "observed_prices": 6518,
+    "first_date": "2000-01-03",
+    "last_date": "2025-12-31"
+  },
+  "examples": {
+    "dropped_insufficient_history": 59,
+    "dropped_crossing_boundary": 10,
+    "dropped_no_future_target": 5,
+    "splits": {
+      "train": {
+        "first_origin": "2000-04-25",
+        "last_origin": "2017-12-21",
+        "last_target_day": "2017-12-29",
+        "examples": 4437,
+        "high_vol_examples": 444
+      },
+      "validation": {
+        "first_origin": "2018-01-02",
+        "last_origin": "2020-12-22",
+        "last_target_day": "2020-12-31",
+        "examples": 743,
+        "high_vol_examples": 8
+      },
+      "test": {
+        "first_origin": "2021-01-04",
+        "last_origin": "2025-12-23",
+        "last_target_day": "2025-12-31",
+        "examples": 1244,
+        "high_vol_examples": 46
+      }
+    }
+  },
+  "features": {
+    "window": 60,
+    "inputs": [
+      "log_return",
+      "squared_return",
+      "vol_5",
+      "vol_20"
+    ],
+    "input_mean": {
+      "log_return": 4.6379322037582146e-05,
+      "squared_return": 3.9514293559496544e-05,
+      "vol_5": 0.005716074665042509,
+      "vol_20": 0.0059574552964864105
+    },
+    "input_std": {
+      "log_return": 0.006286566868657236,
+      "squared_return": 8.119255123219616e-05,
+      "vol_5": 0.002620708454956436,
+      "vol_20": 0.0020251567735071843
+    }
+  },
+  "target": {
+    "horizon": 5,
+    "scale_constant": 3.9429743092699994e-05,
+    "high_vol_quantile": 0.9,
+    "high_vol_cutoff": 8.035056898160315e-05
+  }
+}
