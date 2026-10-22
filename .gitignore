@@ -7,10 +7,8 @@ venv/
 
 # Data and model artifacts (persisted on Google Drive and the Hugging Face Hub)
 # model/data/raw/*
-model/artifacts/*/*
 !model/artifacts/manifests/*
 !model/**/.gitkeep
-*.pt
 *.pth
 *.safetensors
 *.onnx
