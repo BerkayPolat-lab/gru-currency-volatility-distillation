@@ -33,7 +33,7 @@ def val_mse(model, X_val, var60_val, target_val, device):
     return float(np.mean((forecast - target_val) ** 2))
 
 
-def train(model, data, cfg, seed, device, y_teacher=None, alpha=0.0, ckpt_path=None):
+def train(model, data, cfg, seed, device, y_teacher=None, alpha=0.0, ckpt_path=None, verbose=True):
     """
     data: loaded splits.npz
     y_teacher: cached teacher ratio preds on train, only for distilled student
@@ -66,11 +66,16 @@ def train(model, data, cfg, seed, device, y_teacher=None, alpha=0.0, ckpt_path=N
                 loss = (1 - alpha) * loss + alpha * mse(pred, batch[2].to(device))
             opt.zero_grad()
             loss.backward()
+            if t.get("grad_clip"):
+                torch.nn.utils.clip_grad_norm_(model.parameters(), t["grad_clip"])  # caps huge grads from ratio spikes
             opt.step()
             total += loss.item() * len(x)
 
         v = val_mse(model, data["X_validation"], data["var60_validation"], data["target_validation"], device)
         history.append({"epoch": epoch, "train_loss": total / len(loader.dataset), "val_mse": v})
+        if verbose:
+            # tqdm.write prints above bar w/o breaking it
+            tqdm.write(f"epoch {epoch:>3} | train loss {history[-1]['train_loss']:.4f} | val mse {v:.4e}")
 
         # early stopping on val mse in original units, keep best weights only
         if v < best:

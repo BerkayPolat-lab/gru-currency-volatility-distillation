@@ -49,6 +49,7 @@ training:
   early_stopping_metric: val_mse
   early_stopping_patience: 10
   seeds: [0, 1, 2]
+  grad_clip: 1.0                # max gradient norm, stabilizes rnn on heavy tailed targets
 
 distillation:
   alpha_grid: [0.25, 0.50, 0.75] # alpha = 0 is the direct-student control
