@@ -1,4 +1,4 @@
-"""GRU teacher and student architectures with a shared nonnegative output head, plus the trailing-20 historical control."""
+"""GRU teacher and student architectures with a shared nonnegative output head, plus the trailing 60 historical control."""
 
 
 def historical_control(squared_returns, window):
