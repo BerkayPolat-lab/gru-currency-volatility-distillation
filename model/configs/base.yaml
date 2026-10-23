@@ -27,14 +27,19 @@ splits:
   drop_examples_crossing_split: true
 
 models:
+  # Per-model optimizer settings; the shared training budget lives under training.
   teacher:
     num_layers: 3
     hidden_size: 128
-    dropout: 0.2
+    dropout: 0.4                # notebook 03 grid winner (teacher_grid.csv)
+    learning_rate: 3.0e-4       # notebook 03 grid winner
+    weight_decay: 1.0e-4        # tied with 1.0e-2 in the grid; used for the committed checkpoints
   student:
     num_layers: 1
     hidden_size: 32
     dropout: 0.0
+    learning_rate: 1.0e-3       # placeholder until notebook 05 tunes the students
+    weight_decay: 1.0e-4
   output_transform: softplus    # identical nonnegative head for all models
 
 historical_control:
@@ -42,14 +47,19 @@ historical_control:
 
 training:
   optimizer: adamw
-  learning_rate: 1.0e-3
-  weight_decay: 1.0e-4
   batch_size: 32
   max_epochs: 100
   early_stopping_metric: val_mse
   early_stopping_patience: 10
   seeds: [0, 1, 2]
   grad_clip: 1.0                # max gradient norm, stabilizes rnn on heavy tailed targets
+
+tuning:
+  # Validation-only grids; copy each winner into models.<kind>.
+  teacher:
+    learning_rate: [1.0e-3, 3.0e-4, 1.0e-4]
+    dropout: [0.2, 0.4]
+    weight_decay: [1.0e-4, 1.0e-2]
 
 distillation:
   alpha_grid: [0.25, 0.50, 0.75] # alpha = 0 is the direct-student control

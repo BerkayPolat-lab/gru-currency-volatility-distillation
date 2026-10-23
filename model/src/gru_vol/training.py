@@ -40,6 +40,11 @@ def train(model, data, cfg, seed, device, y_teacher=None, alpha=0.0, ckpt_path=N
     alpha: distillation weight, 0 = plain mse on true ratio (teacher, direct student)
     """
     t = cfg["training"]
+    # optimizer settings are per model (models.teacher / models.student), so teacher tuning never leaks into the students
+    stale = {"learning_rate", "weight_decay"} & t.keys()
+    if stale:
+        raise ValueError(f"set {sorted(stale)} under models.<kind> in the config, not under training")
+    m = cfg["models"][model.kind]
     model.to(device)
 
     # train batches, teacher preds ride along so rows stay lined up
@@ -49,7 +54,7 @@ def train(model, data, cfg, seed, device, y_teacher=None, alpha=0.0, ckpt_path=N
     gen = torch.Generator().manual_seed(seed)  # fixed batch order per seed
     loader = DataLoader(TensorDataset(*tensors), batch_size=t["batch_size"], shuffle=True, generator=gen)
 
-    opt = torch.optim.AdamW(model.parameters(), lr=t["learning_rate"], weight_decay=t["weight_decay"])
+    opt = torch.optim.AdamW(model.parameters(), lr=m["learning_rate"], weight_decay=m["weight_decay"])
     mse = torch.nn.MSELoss()
 
     best, best_state, bad_epochs, history = float("inf"), None, 0, []

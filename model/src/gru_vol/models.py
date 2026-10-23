@@ -31,6 +31,8 @@ class GRUForecaster(nn.Module):
 
 
 def build_model(cfg, kind):
-    """kind = "teacher" or "student", sizes from config"""
+    """kind = "teacher" or "student", sizes from config; train() reads the kind's optimizer settings"""
     m = cfg["models"][kind]
-    return GRUForecaster(len(cfg["features"]["inputs"]), m["hidden_size"], m["num_layers"], m["dropout"])
+    model = GRUForecaster(len(cfg["features"]["inputs"]), m["hidden_size"], m["num_layers"], m["dropout"])
+    model.kind = kind
+    return model
