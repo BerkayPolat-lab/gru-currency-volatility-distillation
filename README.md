@@ -124,6 +124,7 @@ This is a research target, not an expected result.
 | `01_data_pipeline` | Snapshot, features, targets, splits, trailing scaling, processed arrays, manifest |
 | `02_historical_control` | Trailing-60 baseline, high-volatility cutoff check, control metrics |
 | `03_teacher_training` | Teacher pilot, hyperparameter grid, three-seed training |
+| `03b_preliminary_table_metrics` | Params, size, and CPU latency (no student training needed), plus control and teacher validation metrics |
 | `04_teacher_cache` | Frozen teacher predictions on training inputs |
 | `05_student_training` | Alpha search, direct and distilled students |
 | `06_evaluation` | MSE tables, gain over the control, high-volatility analysis, figures |
