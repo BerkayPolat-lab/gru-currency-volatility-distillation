@@ -1,0 +1,20 @@
+{
+  "window": 60,
+  "high_vol_cutoff": 8.035056898160317e-05,
+  "metrics": {
+    "train": {
+      "examples": 4437,
+      "mse": 1.3056332622905973e-09,
+      "high_vol_mse": 8.172195476773602e-09,
+      "high_vol_examples": 444,
+      "const_mse": 1.7556371937107891e-09
+    },
+    "validation": {
+      "examples": 743,
+      "mse": 2.570744748257232e-10,
+      "high_vol_mse": 1.0208087413066995e-08,
+      "high_vol_examples": 8,
+      "const_mse": 8.082201976707404e-10
+    }
+  }
+}
